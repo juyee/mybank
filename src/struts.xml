@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<constant name="struts.i18n.encoding" value="utf-8"></constant>
+	<package name="store" extends="struts-default">
+		<!-- 注意，这里的class属性，一定是spring容器中管理的action的id值 -->
+		
+		<action name="AdminAction_*" class="adminAction" method="{1}">
+			<result name="adminAction_toIndex" type="redirect">/teller_index.jsp</result>
+			<result name="success">/tellerProfile.jsp</result>
+			<result name="tolist" type="redirect">/AdminAction_tolist</result>
+		</action>
+		<action name="LoginAction_*" class="loginAction" method="{1}">
+			 <result name="adminAction_toIndex" type="redirect">/teller_index.jsp</result>
+			 <result name="userAction_toIndex" type="redirect">/user_index.jsp</result>
+		</action>
+		<action name="UserAction_*" class="userAction" method="{1}">
+			<result name="userAction_toIndex" type="redirect">/user_index.jsp</result>
+			<result name="userAction_login" type="redirect">/login_user.jsp</result>
+			<result name="userAction_active" >/activation.jsp</result>
+			<result name="userAction_tolist" >/UserAction_tolist</result>
+			<result name="success">/userlist.jsp</result>
+			<result name="success2">/userlist2.jsp</result>
+			<result name="tolist" type="redirect">/UserAction_tolist</result>
+			<result name="toshow" type="redirect">/userProfile.jsp</result>
+			<result name="upd.jsp">/editUserProfile.jsp</result>
+			<result name="Useradd.jsp">/accountregist.jsp</result>
+			<result name="userIndex.jsp">/user_index.jsp</result>
+		</action>
+		<action name="AccountAction_*" class="accountAction" method="{1}">
+			<result name="tolist"   type="redirect">/AccountAction_tolist</result>
+			<result name="success">/accountlist.jsp</result>			
+			<result name="listbyid">/accountlist2.jsp</result>
+		</action>
+		<action name="RecordAction_*" class="recordAction" method="{1}">
+			<result name="list1">/recordListAll.jsp</result>
+			<result name="list2">/recordlist2.jsp</result>
+			<result name="tolist" type="redirect">/RecordAction_tolist1</result>
+			<result name="tolistAccount" type="redirect">/AccountAction_tolist</result>
+			<result name="toout" >/transfer2.jsp</result>
+			<result name="toin" >/transfer1.jsp</result>
+			<result name="toexchange" >/transfer3.jsp</result>
+			<result name="toupd">/upd.jsp</result>
+			<result name="recordsearch.jsp">/recordsearch.jsp</result>
+		</action>
+    </package>
+</struts>

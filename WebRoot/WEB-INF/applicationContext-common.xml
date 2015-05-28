@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" 
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/context 
+       http://www.springframework.org/schema/context/spring-context-3.0.xsd
+       http://www.springframework.org/schema/tx 
+       http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
+	
+	<!-- 设置连接数据库的驱动,URL,用户名,密码,连接池最大连接数、最小连接数、初始连接数等参数 
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+		destroy-method="close"
+		p:driverClass="oracle.jdbc.driver.OracleDriver"
+		p:jdbcUrl="jdbc:oracle:thin:@localhost:1521:orcl"
+		p:user="scott"
+		p:password="tiger"
+		p:maxPoolSize="40"
+		p:minPoolSize="1"
+		p:initialPoolSize="1"
+		p:maxIdleTime="20"/>
+		-->
+		<bean id="dataSource"		class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName"
+			value="com.mysql.jdbc.Driver">
+		</property>
+		<property name="url" value="jdbc:mysql://localhost:3306/bank"></property>
+		<property name="username" value="root"></property>
+		<property name="password" value="root"></property>
+	</bean>
+		
+	<!-- 定义Hibernate的SessionFactory -->
+	<!-- 依赖注入数据源，注入正是上面定义的dataSource -->
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean"
+		p:dataSource-ref="dataSource">
+		<!-- mappingResouces属性用来列出全部映射文件 -->
+		<property name="mappingResources">
+			<list>
+			<!-- 以下用来列出Hibernate映射文件 -->
+			<value>com/my/entity/Admin.hbm.xml</value>
+			<value>com/my/entity/Account.hbm.xml</value>
+			<value>com/my/entity/Message.hbm.xml</value>
+			<value>com/my/entity/User.hbm.xml</value>
+			<value>com/my/entity/Record.hbm.xml</value>
+			</list>
+		</property>
+	<!-- 定义Hibernate的SessionFactory的属性 -->
+		<property name="hibernateProperties">
+			<!-- 指定数据库方言、是否自动建表，是否生成SQL语句等 	-->
+			<value>
+			hibernate.dialect=org.hibernate.dialect.MySQLDialect
+			hibernate.hbm2ddl.auto=update
+			hibernate.show_sql=true
+			hibernate.format_sql=true
+			hibernate.cache.use_second_level_cache=true
+			hibernate.cache.provider_class=org.hibernate.cache.EhCacheProvider
+			</value>
+		</property>
+	</bean>
+	<!-- 配置spring事务管理器 -->
+	<bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<!-- 注入SessionFactory -->
+		<property name="sessionFactory">
+			<ref bean="sessionFactory"/>
+		</property>
+		
+	</bean>
+	<!-- 配置spring事务管理器的传播特性 -->
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<!-- propagation表示的是事务的传播特性，使用required时，是当检测到add开头的方法时，
+		就看此时有没有开启的事务，如果有则将方法放进事务中去，如果没有，则新建一个事务。然后将方法放进去。 -->
+		<tx:attributes>
+			<tx:method name="add*" propagation="REQUIRED"/>
+			<tx:method name="login*" propagation="REQUIRED"/>
+			<tx:method name="upd*" propagation="REQUIRED"/>
+			<tx:method name="del*" propagation="REQUIRED"/>
+			<tx:method name="*" read-only="true"/>
+			<!-- 如果检测到其它的方法，则给其只读数据库的属性。即当本方法在读时，其它的方法不能再去写了。保证一个事务的完整性。 -->
+		</tx:attributes>
+	</tx:advice>
+		<!-- 那些类的哪些方法参与事务的管理 -->
+	<aop:config>
+		<aop:pointcut id="allManagerMethod" expression="execution(* com.my.service.*.*(..))"/>
+		<!-- 注意，标签是aop:advisor -->
+		<aop:advisor pointcut-ref="allManagerMethod" advice-ref="txAdvice"/>
+	</aop:config>
+</beans>
+
+

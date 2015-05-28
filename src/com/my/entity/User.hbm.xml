@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.my.entity">
+	<class name="User" table="m_User">
+		<id name="id">
+            <generator class="identity" />
+		</id>
+		<property name="loginname"/>
+		<property name="password"/>
+		<property name="expassword"/>
+		<property name="state"/>
+		<property name="name"/>
+		<property name="logincount"  not-null="true"/>
+		<property name="registedate" />
+		<property name="useableBalance"/>
+		<property name="IDcardNum"/>
+		<property name="tel"/>
+		<property name="sex"/>
+		<property name="address"/>
+		<property name="email"/>
+		<property name="remark"/>
+		<many-to-one name="admin" class="Admin" column="admin_id" lazy="false"  ></many-to-one>
+		<!-- 单向n-1 -->
+	</class>
+</hibernate-mapping>

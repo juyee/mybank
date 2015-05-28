@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" 
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/context 
+       http://www.springframework.org/schema/context/spring-context-3.0.xsd
+       http://www.springframework.org/schema/tx 
+       http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
+	   
+	<!-- dao，注意，dao继承了HibernateDaoSupport类，该类有一个属性sf需要注入 -->
+	<bean  id="adminDao" class="com.my.dao.impl.AdminDaoImpl" p:sessionFactory-ref="sessionFactory" autowire="byType"/>
+	<bean  id="baseDao" class="com.my.dao.impl.BaseDaoImpl" p:sessionFactory-ref="sessionFactory" autowire="byType"/>
+	<bean  id="userDao" class="com.my.dao.impl.UserDaoImpl" p:sessionFactory-ref="sessionFactory" autowire="byType"/>
+	<bean  id="accDao" class="com.my.dao.impl.AccDaoImpl" p:sessionFactory-ref="sessionFactory" autowire="byType"/>
+	<bean  id="recordDao" class="com.my.dao.impl.RecordDaoImpl" p:sessionFactory-ref="sessionFactory" autowire="byType"/>
+	<!-- service -->
+	<bean  id="adminService" class="com.my.service.impl.AdminServiceImpl" p:adminDao-ref="adminDao" autowire="byType"/>
+	<bean  id="accService" class="com.my.service.impl.AccServiceImpl" p:accDao-ref="accDao" autowire="byType"/>
+	<bean  id="userService" class="com.my.service.impl.UserServiceImpl" p:userDao-ref="userDao" autowire="byType"/>
+	<bean  id="recordService" class="com.my.service.impl.RecordServiceImpl" p:recordDao-ref="recordDao" autowire="byType"/>
+	<!-- action -->
+	<bean  id="loginAction" class="com.my.action.LoginAction"  autowire="byType"/>
+	<bean  id="adminAction" class="com.my.action.AdminAction"  autowire="byType"/>
+	<bean  id="accountAction" class="com.my.action.AccountAction"  autowire="byType"/>
+	<bean  id="userAction" class="com.my.action.UserAction"  autowire="byType" />
+	<bean  id="recordAction" class="com.my.action.RecordAction" 	p:recordService-ref="recordService" autowire="byType"/>
+	
+</beans>
